@@ -1,10 +1,13 @@
 import os
 import time
+
 # Google API для распознование речи
 import speech_recognition as sr
-# модуль для нечеткого сравнения
+
+# Модуль для нечеткого сравнения
 import fuzzywuzzy as fuzz
-# преобразование текста в речь
+
+# Преобразование текста в речь
 import pyttsx3
 import datetime
 
@@ -12,7 +15,7 @@ import datetime
 # engine.say("Hey you! I am Jarvis")
 # engine.runAndWait()
 
-# определение индекса микрофона
+# Определение индекса микрофона
 # for index, name in enumerate(sr.Microphone.list_microphone_names()):
 #     print("Microphone with name \"{1}\" found for `Microphone(device_index={0})`".format(index, name))
 
@@ -24,11 +27,35 @@ opts = {
     }
 }
 
+def speak(what):
+    print(what)
+    speak_engine.say(what)
+    speak_engine.runAndWait()
+    speak_engine.stop()
+
+def callback(recognizer, audio):
+    pass
+
+def recognized_cmd(cmd):
+    pass
+
+def execute_cmd(cmd):
+    pass
+
+# Запуск
 r = sr.Recognizer()
+m = sr.Microphone(device_index=0)
 
-with sr.Microphone(device_index=0) as source:
-    print("Say some thing...")
-    audio = r.listen(source)
+with m as source:
+    r.adjust_for_ambient_noise(source)
 
-query = r.recognize_google(audio, language="ru-RU")
-print("Ты сказал: " + query.lower())
+speak_engine = pyttsx3.init()
+
+# Если установлены голоса для синтеза речи
+voices = speak_engine.getProperty('voices')
+speak_engine.setProperty('voice', voices[4].id)
+
+speak("Привет, я тебя слушаю")
+
+stop_listening = r.listen_in_background(m, callback)
+while True: time.sleep(0.1)
